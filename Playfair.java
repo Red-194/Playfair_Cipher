@@ -12,17 +12,18 @@ public class Playfair
         sc=new Scanner(System.in);
         Playfair pf=new Playfair();
         String choice="";
+        
         System.out.println("Enter the text: ");
         String st=(sc.nextLine()+" ").toLowerCase();
         System.out.println("Enter the key: ");
         key=sc.nextLine().toLowerCase();
+        String copy = key;  //To print the original key instead of the one without repeated letters.
         System.out.println("Encrypt/Decrypt");
         choice=sc.nextLine().toLowerCase();
         String wrd="",result="";
         char ch;
+        
         pf.printGrid();
-
-        String copy = key;
 
         for(int i=0;i<st.length();i++)
         {
