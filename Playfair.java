@@ -34,12 +34,12 @@ public class Playfair
             {
                 if(choice.equals("encrypt"))
                 {
-                    result+=pf.Encrypt(wrd)+" ";
+                    result+=pf.encrypt(wrd)+" ";
                     wrd="";
                 }
                 else if(choice.equals("decrypt"))
                 {
-                    result+=pf.Decrypt(wrd)+" ";
+                    result+=pf.decrypt(wrd)+" ";
                     wrd="";
                 }
             }
@@ -64,82 +64,80 @@ public class Playfair
         }
     }
 
-    public String Encrypt(String st)
-    {
-        String store=digram(st);
-        store=store.replaceAll(" ","");
-        String di="";char ch1,ch2;
-        int x1,y1,x2,y2;
-        String res="";
-        int a,b;int max=0;
-        int len=store.length();
-        for(int i=2;i<len+2;i+=2)
-        {
-            di=store.substring(i-2,i);
-            elementIndices(di.charAt(0),di.charAt(1));
-            a=index(di.charAt(0));b=index(di.charAt(1));
-            x1=indexA[0];y1=indexA[1];
-            x2=indexB[0];y2=indexB[1];
-            if(x1==x2) //same row
-            {
-                max=6*x1+6;
-                ch1=ch[((y1+1)>5)?((a+1)-max)+6*x1:(a+1)];
-                ch2=ch[((y2+1)>5)?((b+1)-max)+6*x2:(b+1)];
-                res+=""+ch1+ch2;
-            }
-            else if(y1==y2) //same column
-            {
-                max=30;
-                ch1=ch[((x1+1)>5)?(a-max):a+6];
-                ch2=ch[((x2+1)>5)?(b-max):b+6];
-                res+=""+ch1+ch2;
-            }
-            else //different row and column
-            {
-                ch1=ch[6*x1+y2];
-                ch2=ch[6*x2+y1];
-                res+=""+ch1+ch2;
+    public String encrypt(String st) {
+        String store = digram(st);
+        store = store.replaceAll(" ", "");
+        String di = "";
+        char ch1, ch2;
+        int x1, y1, x2, y2;
+        StringBuilder res = new StringBuilder();
+        int a, b;
+        int max = 0;
+        int len = store.length();
+        for (int i = 2; i < len + 2; i += 2) {
+            di = store.substring(i - 2, i);
+            elementIndices(di.charAt(0), di.charAt(1));
+            a = index(di.charAt(0));
+            b = index(di.charAt(1));
+            x1 = indexA[0];
+            y1 = indexA[1];
+            x2 = indexB[0];
+            y2 = indexB[1];
+            if (x1 == x2) { // same row
+                max = 6 * x1 + 6;
+                ch1 = ch[((y1 + 1) > 5) ? ((a + 1) - max) + 6 * x1 : (a + 1)];
+                ch2 = ch[((y2 + 1) > 5) ? ((b + 1) - max) + 6 * x2 : (b + 1)];
+                res.append(ch1).append(ch2);
+            } else if (y1 == y2) { // same column
+                max = 30;
+                ch1 = ch[((x1 + 1) > 5) ? (a - max) : a + 6];
+                ch2 = ch[((x2 + 1) > 5) ? (b - max) : b + 6];
+                res.append(ch1).append(ch2);
+            } else { // different row and column
+                ch1 = ch[6 * x1 + y2];
+                ch2 = ch[6 * x2 + y1];
+                res.append(ch1).append(ch2);
             }
         }
-        return res;
+        return res.toString();
     }
-    public String Decrypt(String st)
-    {
-        String store=digram(st);
-        store=store.replaceAll(" ","");
-        String di="";char ch1,ch2;
-        int x1,y1,x2,y2;
-        String res="";
-        int a,b;
-        int len=store.length();
-        for(int i=2;i<len+2;i+=2)
-        {
-            di=store.substring(i-2,i);
-            elementIndices(di.charAt(0),di.charAt(1));
-            a=index(di.charAt(0));b=index(di.charAt(1));
-            x1=indexA[0];y1=indexA[1];
-            x2=indexB[0];y2=indexB[1];
-            if(x1==x2)
-            {
-                ch1=ch[((y1-1)<0)?6*x1+5:a-1];
-                ch2=ch[((y2-1)<0)?6*x2+5:b-1];
-                res+=""+ch1+ch2;
-            }
-            else if(y1==y2)
-            {
-                ch1=ch[((x1-1)<0)?30+y1:a-6];
-                ch2=ch[((x2-1)<0)?30+y2:b-6];
-                res+=""+ch1+ch2;
-            }
-            else
-            {
-                ch1=ch[6*x1+y2];
-                ch2=ch[6*x2+y1];
-                res+=""+ch1+ch2;
+
+    public String decrypt(String st) {
+
+        String store = digram(st);
+        store = store.replaceAll(" ", "");
+        String di = "";
+        char ch1, ch2;
+        int x1, y1, x2, y2;
+        StringBuilder res = new StringBuilder();
+        int a, b;
+        int len = store.length();
+        for (int i = 2; i < len + 2; i += 2) {
+        di = store.substring(i - 2, i);
+        elementIndices(di.charAt(0), di.charAt(1));
+        a = index(di.charAt(0));
+        b = index(di.charAt(1));
+        x1 = indexA[0];
+        y1 = indexA[1];
+        x2 = indexB[0];
+        y2 = indexB[1];
+        if (x1 == x2) {
+            ch1 = ch[((y1 - 1) < 0) ? 6 * x1 + 5 : a - 1];
+            ch2 = ch[((y2 - 1) < 0) ? 6 * x2 + 5 : b - 1];
+            res.append(ch1).append(ch2);
+            } else if (y1 == y2) {
+            ch1 = ch[((x1 - 1) < 0) ? 30 + y1 : a - 6];
+            ch2 = ch[((x2 - 1) < 0) ? 30 + y2 : b - 6];
+            res.append(ch1).append(ch2);
+            } else {
+            ch1 = ch[6 * x1 + y2];
+            ch2 = ch[6 * x2 + y1];
+            res.append(ch1).append(ch2);
             }
         }
-        return removeFiller(res).trim();
+        return removeFiller(res.toString()).trim();
     }
+    
     public String digram(String s)
     {
         String temp=s;
