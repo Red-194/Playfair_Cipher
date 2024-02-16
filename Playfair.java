@@ -13,58 +13,54 @@ public class Playfair
         Playfair pf=new Playfair();
         String choice="";
         
-        System.out.println("Enter the text: ");
-        String st=(sc.nextLine()+" ").toLowerCase();
-        System.out.println("Enter the key: ");
-        key=sc.nextLine().toLowerCase();
-        String copy = key;  //To print the original key instead of the one without repeated letters.
-        System.out.println("Encrypt/Decrypt");
-        choice=sc.nextLine().toLowerCase();
-        String wrd="",result="";
-        char ch;
+        // The main code is put inside a do-while loop for ease of reuse, instead of calling the program again and again
+        do{
+            System.out.println("Enter the text: ");
+            String st=(sc.nextLine()+" ").toLowerCase();
+            System.out.println("Enter the key: ");
+            key=sc.nextLine().toLowerCase();
+            System.out.println("Encrypt/Decrypt");
+            choice=sc.nextLine().toLowerCase();
+            String wrd="",result="";
+            char ch;
         
-        pf.printGrid();
+            pf.printGrid();
 
-        for(int i=0;i<st.length();i++)
-        {
-            ch=st.charAt(i);
-            if(ch!=' ')
-            wrd+=ch;
-            else if(ch==' ')
+            for(int i=0;i<st.length();i++)
             {
-                if(choice.equals("encrypt"))
+                ch=st.charAt(i);
+                if(ch!=' ')
+                wrd+=ch;
+                else if(ch==' ')
                 {
-                    result+=pf.encrypt(wrd)+" ";
-                    wrd="";
-                }
-                else if(choice.equals("decrypt"))
-                {
-                    result+=pf.decrypt(wrd)+" ";
-                    wrd="";
+                    if(choice.equals("encrypt"))
+                    {
+                        result+=pf.encrypt(wrd)+" ";
+                        wrd="";
+                    }
+                    else if(choice.equals("decrypt"))
+                    {
+                        result+=pf.decrypt(wrd)+" ";
+                        wrd="";
+                    }
                 }
             }
-        }
-        System.out.println("The key is: "+ copy);
-        System.out.println("The encrypted/decrypted text is: "+result);
-        System.out.println("-----------------------------------------------------------");
-        System.out.println("Would you like to encrypt/decrypt another message? (Yes/No)");
-        pf.redo();
+
+            System.out.println("The key is: "+ key);
+            System.out.println("The encrypted/decrypted text is: "+result);
+            System.out.println("-----------------------------------------------------------");
+            System.out.println("Would you like to encrypt/decrypt another message? (Yes/No)");
+            choice = sc.nextLine();
+
+        }while(choice.equalsIgnoreCase("yes"));
+
+        System.out.println("Thank you for using the program!");
         sc.close();
     }
 
-    public void redo()
-    {
-        String choice=sc.nextLine();
-        if(choice.equalsIgnoreCase("yes"))
-        main(new String[0]);
-        else if(choice.toLowerCase().startsWith("no"))
-        {
-            System.out.println("Thank you for using the program!");
-            return;
-        }
-    }
-
+    // This function encrypts the plaintext into the required ciphertext
     public String encrypt(String st) {
+
         String store = digram(st);
         store = store.replaceAll(" ", "");
         String di = "";
@@ -102,6 +98,7 @@ public class Playfair
         return res.toString();
     }
 
+    // This functiond decrypts the ciphertext to plaintext
     public String decrypt(String st) {
 
         String store = digram(st);
@@ -138,6 +135,7 @@ public class Playfair
         return removeFiller(res.toString()).trim();
     }
     
+    //This function is responsible for splitting the plain text to digrams or pairs, adding fillers whereever required.
     public String digram(String s)
     {
         String temp=s;
@@ -156,30 +154,44 @@ public class Playfair
         }
         return temp.replaceAll("X","x");
     }
+
     public void printGrid()
     {
-        key=key.toLowerCase();
-        for(int i=0;i<key.length();i++) //loop for removing repeating letters in the key
-        key=key.substring(0,i+1)+key.substring(i+1).replaceAll(key.charAt(i)+"","");
-        String keyString=key;
-        for(char c='a';c<='z';c++) //adds the alphabets to keyString which were not previously printed
-        if(keyString.indexOf(c)==-1)
-        keyString+=c;
-        for(char c='0';c<='9';c++)//adds the digits to keyString which were not previously printed
-        if(keyString.indexOf(c)==-1)
-        keyString+=c;
-        int len=keyString.length();
-        for(int i=0;i<len;i++) // loop storing values into the array
-        ch[i]=keyString.charAt(i);
-        int k=0;
-        System.out.println("\n"+"-----------");
-        for(int i=0;i<6;i++)
-        {
-            for(int j=0;j<6;j++,k++)
-            System.out.print(ch[k]+" ");
-            System.out.println();
+        key = key.toLowerCase();
+
+        Set<Character> keySet = new LinkedHashSet<>();
+        for(char c: key.toCharArray()){
+            if(Character.isLetterOrDigit(c))
+                keySet.add(c);
         }
-        System.out.println("-----------"+"\n");
+
+        System.out.println(keySet.toString());
+
+        for(char c='a'; c<='z'; c++){
+            if(!keySet.contains(c)){
+                keySet.add(c);
+            }
+        }
+
+        for(char c='0';c<='9';c++){
+            if(!keySet.contains(c))
+                keySet.add(c);
+        }
+
+        ch = keySet.toString().replaceAll("[\\[\\],\\s]", "").toCharArray();
+
+        System.out.println("\n-----------");
+        int count = 0;
+        for(char c: keySet){
+            System.out.print(c+" ");
+            count++;
+            if(count==6){
+                System.out.println();
+                count = 0;
+            }
+        }
+        System.out.println("-----------\n");
+
     }
     public String removeFiller(String st)
     {
@@ -237,6 +249,7 @@ public class Playfair
         }
         return result;
     }
+
     //Everything below this are the functions used by the above functions
     public boolean isVowel(char ch)
     {
@@ -268,6 +281,7 @@ public class Playfair
         res=res.substring(0,res.lastIndexOf('X')-1);
         return res;
     }
+
     public boolean lettersRepeat(String s)
     {
         String store="";
@@ -284,6 +298,7 @@ public class Playfair
         }
         return false;
     }
+
     public int repetitionIndex(String s)
     {
         String store="";
@@ -300,13 +315,15 @@ public class Playfair
         }
         return -1;
     }
-    public String addFiller(String s,int n)
-    {
+
+    public String addFiller(String s,int n){
+
         s=s.replaceAll(" ","");
         String res="";
         res=s.substring(0,n)+"X"+s.substring(n);
         return res;
     }
+
     public int index(char c)
     {
         for(int i=0;i<36;i++)
